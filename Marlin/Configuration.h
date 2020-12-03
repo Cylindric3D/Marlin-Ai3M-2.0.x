@@ -73,6 +73,10 @@
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "(CylMarlin-Ai3M-2.0.x)" // Who made the changes.
 
+// Enable the BLTouch alterations on the AnyCubic Mega S
+// Configures the probe pins and enables babystepping
+//#define CYL_BLTOUCH_ENABLED
+
 /**
  * *** VENDORS PLEASE READ ***
  *
@@ -632,7 +636,9 @@
 #define USE_ZMIN_PLUG
 #define USE_XMAX_PLUG
 //#define USE_YMAX_PLUG
+#ifdef CYL_BLTOUCH_ENABLED
 #define USE_ZMAX_PLUG
+#endif
 
 // Enable pullup for all endstops to prevent a floating state
 #define ENDSTOPPULLUPS
@@ -899,7 +905,9 @@
 /**
  * The BLTouch probe uses a Hall effect sensor and emulates a servo.
  */
-#define BLTOUCH
+#ifdef CYL_BLTOUCH_ENABLED
+  #define BLTOUCH
+#endif
 
 /**
  * Touch-MI Probe by hotends.fr
@@ -1219,15 +1227,22 @@
  */
 //#define AUTO_BED_LEVELING_3POINT
 //#define AUTO_BED_LEVELING_LINEAR
-#define AUTO_BED_LEVELING_BILINEAR
+//#define AUTO_BED_LEVELING_BILINEAR
 //#define AUTO_BED_LEVELING_UBL
 //#define MESH_BED_LEVELING
+#ifdef CYL_BLTOUCH_ENABLED
+  #define AUTO_BED_LEVELING_BILINEAR
+#else
+  #define MESH_BED_LEVELING
+#endif
 
 /**
  * Normally G28 leaves leveling disabled on completion. Enable
  * this option to have G28 restore the prior leveling state.
  */
-#define RESTORE_LEVELING_AFTER_G28
+#ifdef CYL_BLTOUCH_ENABLED
+  #define RESTORE_LEVELING_AFTER_G28
+#endif
 
 /**
  * Enable detailed logging of G28, G29, M48, etc.
@@ -1371,11 +1386,11 @@
 // - Move the Z probe (or nozzle) to a defined XY point before Z Homing when homing all axes (G28).
 // - Prevent Z homing when the Z probe is outside bed area.
 //
-#define Z_SAFE_HOMING
+//#define Z_SAFE_HOMING
 
-#if ENABLED(Z_SAFE_HOMING)
-  #define Z_SAFE_HOMING_X_POINT ((X_BED_SIZE) / 2)    // X point for Z homing when homing all axes (G28).
-  #define Z_SAFE_HOMING_Y_POINT ((Y_BED_SIZE) / 2)    // Y point for Z homing when homing all axes (G28).
+#if EITHER(CYL_BLTOUCH_ENABLED, Z_SAFE_HOMING)
+  #define Z_SAFE_HOMING_X_POINT X_CENTER  // X point for Z homing
+  #define Z_SAFE_HOMING_Y_POINT Y_CENTER  // Y point for Z homing
 #endif
 
 // Homing speeds (mm/m)

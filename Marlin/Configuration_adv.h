@@ -1468,7 +1468,9 @@
  *
  * Warning: Does not respect endstops!
  */
-#define BABYSTEPPING
+#ifdef CYL_BLTOUCH_ENABLED
+  #define BABYSTEPPING
+#endif
 #if ENABLED(BABYSTEPPING)
   //#define INTEGRATED_BABYSTEPPING         // EXPERIMENTAL integration of babystepping into the Stepper ISR
   //#define BABYSTEP_WITHOUT_HOMING
